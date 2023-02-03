@@ -13,7 +13,7 @@ Ext.ux.GMapPanel = Ext.extend(Ext.Panel, {
      */
     respErrors: [{
             code: 'UNKNOWN_ERROR',
-            msg: 'A geocoding or directions request could not be successfully processed, yet the exact reason for the failure is not known.' 
+            msg: 'A geocoding or directions request could not be successfully processed, yet the exact reason for the failure is not known.'
         },{
             code: 'ERROR',
             msg: 'There was a problem contacting the Google servers.'
@@ -22,13 +22,13 @@ Ext.ux.GMapPanel = Ext.extend(Ext.Panel, {
             msg: 'The request did not encounter any errors but returns zero results.'
         },{
             code: 'INVALID_REQUEST',
-            msg: 'This request was invalid.' 
+            msg: 'This request was invalid.'
         },{
             code: 'REQUEST_DENIED',
-            msg: 'The webpage is not allowed to use the geocoder for some reason.' 
+            msg: 'The webpage is not allowed to use the geocoder for some reason.'
         },{
             code: 'OVER_QUERY_LIMIT',
-            msg: 'The webpage has gone over the requests limit in too short a period of time.' 
+            msg: 'The webpage has gone over the requests limit in too short a period of time.'
     }],
     /**
      * @cfg {Array} locationTypes
@@ -37,7 +37,7 @@ Ext.ux.GMapPanel = Ext.extend(Ext.Panel, {
     locationTypes: [{
             level: 4,
             code: 'ROOFTOP',
-            msg: 'The returned result is a precise geocode for which we have location information accurate down to street address precision.' 
+            msg: 'The returned result is a precise geocode for which we have location information accurate down to street address precision.'
         },{
             level: 3,
             code: 'RANGE_INTERPOLATED',
@@ -49,7 +49,7 @@ Ext.ux.GMapPanel = Ext.extend(Ext.Panel, {
         },{
             level: 1,
             code: 'APPROXIMATE',
-            msg: 'The returned result is approximate.' 
+            msg: 'The returned result is approximate.'
     }],
     /**
      * @cfg {String} respErrorTitle
@@ -88,7 +88,7 @@ Ext.ux.GMapPanel = Ext.extend(Ext.Panel, {
     /**
      * @cfg {String} gmapType
      * The type of map to display, generic options available are: 'map', 'panorama'.
-     * Defaults to <tt>'map'</tt>. 
+     * Defaults to <tt>'map'</tt>.
      * More specific maps can be used by specifying the google map type:
      * <div class="mdetail-params"><ul>
      * <li><b><code>G_NORMAL_MAP</code></b> : <div class="sub-desc"><p>
@@ -104,7 +104,7 @@ Ext.ux.GMapPanel = Ext.extend(Ext.Panel, {
      * Contains an array of the above three types, useful for iterative processing.
      * </p></div></li>
      * <li><b><code>G_PHYSICAL_MAP</code></b> : <div class="sub-desc"><p>
-     * Displays a physical map based on terrain information. 
+     * Displays a physical map based on terrain information.
      * </p></div></li>
      * <li><b><code>G_MOON_ELEVATION_MAP</code></b> : <div class="sub-desc"><p>
      * Displays a shaded terrain map of the surface of the Moon, color-coded by altitude.
@@ -134,7 +134,7 @@ Ext.ux.GMapPanel = Ext.extend(Ext.Panel, {
     /**
      * @cfg {Object} setCenter
      * The initial center location of the map. The map needs to be centered before it can be used.
-     * A marker is not required to be specified. 
+     * A marker is not required to be specified.
      * More markers can be added to the map using the <code>{@link #markers}</code> array.
      * For example:
      * <pre><code>
@@ -166,7 +166,7 @@ setCenter: {
     /**
      * @cfg {Number} pitch
      * The pitch, or vertical direction of the users perspective in degrees.
-     * Defaults to <tt>0</tt> (straight ahead). Valid values are between +90 (straight up) and -90 (straight down). 
+     * Defaults to <tt>0</tt> (straight ahead). Valid values are between +90 (straight up) and -90 (straight down).
      */
     pitch: 0,
     /**
@@ -228,7 +228,7 @@ markers: [{
     // private
     mapDefinedGMap: false,
     initComponent : function(){
-        
+
         this.addEvents(
             /**
              * @event mapready
@@ -243,7 +243,7 @@ markers: [{
              */
             'apiready'
         );
-        
+
         Ext.applyIf(this,{
           markers: [],
           cache: {
@@ -252,44 +252,44 @@ markers: [{
               infowindow: []
           }
         });
-        
-        Ext.ux.GMapPanel.superclass.initComponent.call(this);        
+
+        Ext.ux.GMapPanel.superclass.initComponent.call(this);
 
         if (window.google && window.google.maps){
           this.on('afterrender', this.apiReady, this);
         }else{
           window.gmapapiready = this.apiReady.createDelegate(this);
-          this.buildScriptTag('http://maps.google.com/maps/api/js?sensor=false&callback=gmapapiready');
+            this.buildScriptTag('http://maps.google.com/maps/api/js?key='+this.apiKey+'&sensor=false&callback=gmapapiready');
         }
 
     },
     apiReady : function(){
-        
+
         if (this.rendered){
-          
+
           (function(){
-          
+
           if (this.gmapType === 'map'){
               this.gmap = new google.maps.Map(this.body.dom, {zoom:this.zoomLevel,mapTypeId: google.maps.MapTypeId.ROADMAP});
               this.mapDefined = true;
               this.mapDefinedGMap = true;
           }
-          
+
           if (this.gmapType === 'panorama'){
               this.gmap = new GStreetviewPanorama(this.body.dom);
               this.mapDefined = true;
           }
-  
+
           if (!this.mapDefined && this.gmapType){
              this.gmap = new google.maps.Map(this.body.dom, {zoom:this.zoomLevel,mapTypeId: google.maps.MapTypeId.ROADMAP});
              this.gmap.setMapTypeId(this.gmapType);
              this.mapDefined = true;
              this.mapDefinedGMap = true;
           }
-          
+
           google.maps.event.addListenerOnce(this.getMap(), 'tilesloaded', this.onMapReady.createDelegate(this));
           google.maps.event.addListener(this.getMap(), 'dragend', this.dragEnd.createDelegate(this));
-          
+
           if (typeof this.setCenter === 'object') {
               if (typeof this.setCenter.geoCodeAddr === 'string'){
                   this.geoCodeLookup(this.setCenter.geoCodeAddr, this.setCenter.marker, false, true, this.setCenter.listeners);
@@ -297,7 +297,7 @@ markers: [{
                   if (this.gmapType === 'map'){
                       var point = new google.maps.LatLng(this.setCenter.lat,this.setCenter.lng);
                       this.getMap().setCenter(point, this.zoomLevel);
-                      this.lastCenter = point;  
+                      this.lastCenter = point;
                   }
                   if (typeof this.setCenter.marker === 'object' && typeof point === 'object') {
                         this.addMarker(point, this.setCenter.marker, this.setCenter.marker.clear, true, this.setCenter.listeners);
@@ -307,19 +307,19 @@ markers: [{
                   this.getMap().setLocationAndPOV(new google.maps.LatLng(this.setCenter.lat,this.setCenter.lng), {yaw: this.yaw, pitch: this.pitch, zoom: this.zoomLevel});
               }
           }
-          
+
           }).defer(200,this);
-          
+
         }else{
           this.on('afterrender', this.apiReady, this);
         }
     },
     // private
     afterRender : function(){
-        
+
         var wh = this.ownerCt.getSize();
         Ext.applyIf(this, wh);
-        
+
         Ext.ux.GMapPanel.superclass.afterRender.call(this);
 
     },
@@ -328,20 +328,20 @@ markers: [{
         var script  = document.createElement('script'),
         head        = document.getElementsByTagName("head")[0];
         script.type = "text/javascript";
-        script.src  = filename;    
-        
+        script.src  = filename;
+
         return head.appendChild(script);
     },
     // private
     onMapReady : function(){
-                
+
         this.addMapControls();
         this.addOptions();
-        
+
         this.addMarkers(this.markers);
-        
+
         this.fireEvent('mapready', this, this.getMap());
-        
+
     },
     // private
     onResize : function(w, h){
@@ -357,7 +357,7 @@ markers: [{
 
     },
     // private
-    setSize : function(width, height, animate){ 
+    setSize : function(width, height, animate){
         Ext.ux.GMapPanel.superclass.setSize.call(this, width, height, animate);
 
         // check for the existance of the google map in case setSize is called too early
@@ -367,7 +367,7 @@ markers: [{
               this.getMap().setCenter(this.lastCenter, this.zoomLevel);
             }
         }
-        
+
     },
     // private
     dragEnd: function(){
@@ -378,28 +378,28 @@ markers: [{
      * @return {GMap} this
      */
     getMap : function(){
-        
+
         return this.gmap;
-        
+
     },
     /**
      * Returns the maps center as a GLatLng object
      * @return {GLatLng} this
      */
     getCenter : function(){
-        
+
         return this.getMap().getCenter();
-        
+
     },
     /**
      * Returns the maps center as a simple object
      * @return {Object} this has lat and lng properties only
      */
     getCenterLatLng : function(){
-        
+
         var ll = this.getCenter();
         return {lat: ll.lat(), lng: ll.lng()};
-        
+
     },
     /**
      * Creates markers from the array that is passed in. Each marker must consist of at least
@@ -419,7 +419,7 @@ markers: [{
                 }
             }
         }
-        
+
     },
     /**
      * Creates a single marker.
@@ -443,11 +443,11 @@ markers: [{
         var mark = new google.maps.Marker(Ext.apply(marker, {
             position: point
         }));
-        
+
         if (marker.infoWindow){
             this.createInfoWindow(marker.infoWindow, point, mark);
         }
-        
+
         this.cache.marker.push(mark);
         mark.setMap(this.getMap());
 
@@ -456,9 +456,9 @@ markers: [{
                 google.maps.event.addListener(mark, evt, listeners[evt]);
             }
         }
-        
+
         return mark;
-        
+
     },
     /**
      * Creates a single polyline.
@@ -466,23 +466,23 @@ markers: [{
      * @param {Object} linestyle an object defining the line style to use
      */
     addPolyline : function(points, linestyle){
-        
+
         var plinepnts = new google.maps.MVCArray, pline, linestyle = linestyle ? linestyle : {
             strokeColor: '#FF0000',
             strokeOpacity: 1.0,
             strokeWeight: 2
         };
-        
+
         Ext.each(points, function(point){
             plinepnts.push(new google.maps.LatLng(point.lat, point.lng));
         }, this);
-        
+
         var pline = new google.maps.Polyline(Ext.apply({
           path: plinepnts
         },linestyle));
-        
+
         this.cache.polyline.push(pline);
-        
+
         pline.setMap(this.getMap());
 
     },
@@ -493,19 +493,19 @@ markers: [{
      * @param {GMarker} marker a marker to attach the Info Window to
      */
     createInfoWindow : function(inwin, point, marker){
-        
+
         var me = this, infoWindow = new google.maps.InfoWindow({
             content: inwin.content,
             position: point
         });
-        
+
         if (marker) {
             google.maps.event.addListener(marker, 'click', function(){
                 me.hideAllInfoWindows();
                 infoWindow.open(me.getMap());
             });
         }
-        
+
         this.cache.infowindow.push(infoWindow);
 
         return infoWindow;
@@ -519,7 +519,7 @@ markers: [{
     },
     // private
     clearMarkers : function(){
-        
+
         this.hideAllInfoWindows();
         this.hideMarkers();
 
@@ -538,7 +538,7 @@ markers: [{
     },
     // private
     addMapControls : function(){
-        
+
         if (this.gmapType === 'map') {
             if (Ext.isArray(this.mapControls)) {
                 for(i=0;i<this.mapControls.length;i++){
@@ -550,23 +550,23 @@ markers: [{
                 //this.getMap().add_control(this.mapControls);
             }
         }
-        
+
     },
     /**
      * Adds a GMap control to the map.
      * @param {String} mc a string representation of the control to be instantiated.
      */
     addMapControl : function(mc){
-        
+
         var mcf = window[mc];
         if (typeof mcf === 'function') {
             //this.getMap().addControl(new mcf());
-        }    
-        
+        }
+
     },
     // private
     addOptions : function(){
-        
+
         if (Ext.isArray(this.mapConfOpts)) {
             var mc;
             for(i=0;i<this.mapConfOpts.length;i++){
@@ -574,20 +574,20 @@ markers: [{
             }
         }else if(typeof this.mapConfOpts === 'string'){
             //this.addOption(this.mapConfOpts);
-        }        
-        
+        }
+
     },
     /**
      * Adds a GMap option to the map.
      * @param {String} mo a string representation of the option to be instantiated.
      */
     addOption : function(mo){
-        
+
         var mof = this.getMap()[mo];
         if (typeof mof === 'function') {
             this.getMap()[mo]();
-        }    
-        
+        }
+
     },
     /**
      * Looks up and address and optionally add a marker, center the map to this location, or
@@ -629,16 +629,16 @@ buttons: [
      * @param {Object} listeners a listeners config
      */
     geoCodeLookup : function(addr, marker, clear, center, listeners) {
-        
+
         if (!this.geocoder) {
             this.geocoder = new google.maps.Geocoder();
         }
         this.geocoder.geocode({
                 address: addr
             }, this.addAddressToMap.createDelegate(this, [addr, marker, clear, center, listeners], true));
-        
+
     },
-    // private 
+    // private
     centerOnClientLocation : function(){
         this.getClientLocation(function(loc){
             var point = new google.maps.LatLng(loc.latitude,loc.longitude);
@@ -668,12 +668,12 @@ buttons: [
                 this.geoErrorMsg(this.geoErrorTitle, this.geoErrorMsgUnable);
             }else{
                 point = new google.maps.LatLng(place.lat(),place.lng());
-                    //Dirty to change the lat and lon 
+                    //Dirty to change the lat and lon
                     var tvId = this.ownerCt.tvId;
                     Ext.getCmp('mapstv'+tvId+'-latitude').setValue(place.lat());
-                    Ext.getCmp('mapstv'+tvId+'-longitude').setValue(place.lng());     
+                    Ext.getCmp('mapstv'+tvId+'-longitude').setValue(place.lng());
                     Ext.getCmp('mapstv'+tvId+'-latitude').fireEvent('change');
-                    Ext.getCmp('mapstv'+tvId+'-longitude').fireEvent('change');               
+                    Ext.getCmp('mapstv'+tvId+'-longitude').fireEvent('change');
                     //End fix
                 if (center){
                     this.getMap().setCenter(point, this.zoomLevel);
@@ -693,7 +693,7 @@ buttons: [
                 }
             }
         }
-        
+
     },
     // private
     geoErrorMsg : function(title,msg){
@@ -721,4 +721,4 @@ buttons: [
     }
 });
 
-Ext.reg('gmappanel',Ext.ux.GMapPanel); 
+Ext.reg('gmappanel',Ext.ux.GMapPanel);

@@ -1,3 +1,7 @@
+Google Maps TV 1.3.0
+==============
+- Initialize maps with Google API key to prevent missing parameter errors
+
 Google Maps TV 1.2.0
 ==============
 - Add tabIndex to input fields

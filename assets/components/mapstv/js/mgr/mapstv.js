@@ -174,6 +174,7 @@ mapsTv.panel = function(config) {
             ,width:'100%'
             ,gmapType: 'map'
             ,zoomLevel: 14
+            ,apiKey: MODx.config['mapstv.api_key']
             ,mapConfOpts: ['enableScrollWheelZoom','enableDoubleClickZoom']
             ,mapControls: ['GSmallMapControl','GMapTypeControl']
             ,bodyStyle: 'padding: 5px;'
